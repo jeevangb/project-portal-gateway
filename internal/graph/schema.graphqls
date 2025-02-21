@@ -1,0 +1,13 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type Query {
+  healthCheck: HealthStatus
+}
+
+type HealthStatus{
+  status: Int!
+  message: String! 
+}
