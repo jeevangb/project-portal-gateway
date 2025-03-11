@@ -6,9 +6,24 @@ package graph
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/jeevangb/project-portal-gateway/internal/graph/model"
 )
+
+// SignUp is the resolver for the signUp field.
+func (r *mutationResolver) SignUp(ctx context.Context, input model.NewUser) (*model.UserResponse, error) {
+	ctx, cancel := context.WithTimeout(ctx, 50*time.Minute)
+	defer cancel()
+	return r.Service.SignUp(ctx, &input)
+
+}
+
+// Login is the resolver for the login field.
+func (r *mutationResolver) Login(ctx context.Context, username string, password string) (*model.UserResponse, error) {
+	panic(fmt.Errorf("not implemented: Login - login"))
+}
 
 // HealthCheck is the resolver for the healthCheck field.
 func (r *queryResolver) HealthCheck(ctx context.Context) (*model.HealthStatus, error) {
@@ -18,24 +33,11 @@ func (r *queryResolver) HealthCheck(ctx context.Context) (*model.HealthStatus, e
 	}, nil
 }
 
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
-type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
-}
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
-}
-func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 type mutationResolver struct{ *Resolver }
-*/
+type queryResolver struct{ *Resolver }

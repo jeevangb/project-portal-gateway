@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "internal/grpc/proto";
+
+service AuthService{
+    //Signup RPC
+    rpc SignUp (SignUpRequest) returns (UserResponse);
+
+    //Login RPC
+    rpc Login (LoginRequest) returns (UserResponse);
+}
+
+//Request message for Signup
+message SignUpRequest{
+    string name = 1;
+    string email = 2;
+    string password = 3;
+}
+
+//Request message for Login
+message LoginRequest{
+    string username = 1;
+    string password = 2;
+}
+
+//Response message for both
+message UserResponse{
+    string message = 1;
+    string token = 2;
+}
