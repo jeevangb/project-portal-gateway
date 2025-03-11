@@ -11,3 +11,19 @@ type HealthStatus{
   status: Int!
   message: String! 
 }
+
+input NewUser {
+  name: String!
+  email: String!
+  password: String!
+}
+
+type UserResponse {
+  message: String!
+  token: String 
+}
+
+type Mutation {
+  signUp(input: NewUser!): UserResponse!
+  login(username: String!, password: String!): UserResponse!
+}

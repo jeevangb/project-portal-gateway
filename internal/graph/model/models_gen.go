@@ -7,5 +7,19 @@ type HealthStatus struct {
 	Message string `json:"message"`
 }
 
+type Mutation struct {
+}
+
+type NewUser struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type Query struct {
+}
+
+type UserResponse struct {
+	Message string  `json:"message"`
+	Token   *string `json:"token,omitempty"`
 }
