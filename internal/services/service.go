@@ -13,6 +13,7 @@ type serviceLayer struct {
 
 type Service interface {
 	SignUp(ctx context.Context, input *model.NewUser) (*model.UserResponse, error)
+	Login(ctx context.Context, username string, password string) (*model.UserResponse, error)
 }
 
 func NewService(client clients.AuthClient) (Service, error) {

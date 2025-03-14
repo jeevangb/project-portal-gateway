@@ -12,7 +12,7 @@ import (
 )
 
 type AuthClient struct {
-	SignUp proto.AuthServiceClient
+	UserService proto.AuthServiceClient
 }
 
 func GetGrpcAuthServernection(cfg config.Config) (AuthClient, error) {
@@ -35,6 +35,6 @@ func GetGrpcAuthServernection(cfg config.Config) (AuthClient, error) {
 	// Ensure the connection is closed when done
 	log.Info().Msg("Connection established with auth service at port: " + ServerPort)
 	return AuthClient{
-		SignUp: proto.NewAuthServiceClient(conn),
+		UserService: proto.NewAuthServiceClient(conn),
 	}, nil
 }
