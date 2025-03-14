@@ -7,6 +7,11 @@ type Query {
   healthCheck: HealthStatus
 }
 
+type Mutation {
+  signUp(input: NewUser!): UserResponse!
+  login(email: String!, password: String!): UserResponse!
+}
+
 type HealthStatus{
   status: Int!
   message: String! 
@@ -23,7 +28,5 @@ type UserResponse {
   token: String 
 }
 
-type Mutation {
-  signUp(input: NewUser!): UserResponse!
-  login(email: String!, password: String!): UserResponse!
-}
+
+

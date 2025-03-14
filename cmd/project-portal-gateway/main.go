@@ -10,6 +10,7 @@ import (
 	"github.com/jeevangb/project-portal-gateway/internal/clients"
 	"github.com/jeevangb/project-portal-gateway/internal/config"
 	"github.com/jeevangb/project-portal-gateway/internal/graph"
+	"github.com/jeevangb/project-portal-gateway/internal/middleware"
 	"github.com/jeevangb/project-portal-gateway/internal/server"
 	"github.com/jeevangb/project-portal-gateway/internal/services"
 )
@@ -30,13 +31,21 @@ func main() {
 	if err != nil {
 		return
 	}
+	err = auth.LoadPublicKey(configdata.PublicKeyPath)
+	if err != nil {
+		return
+	}
 	clientConn, err := clients.GetGrpcAuthServernection(configdata)
 	if err != nil {
 		return
 	}
 	service, err := services.NewService(clientConn)
+	if err != nil {
+		return
+	}
 	//Initialize gin router
 	router := gin.Default()
+	router.Use(middleware.ValidateToken())
 	//Initialize graphql server
 	graph := graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
 		Service: service,

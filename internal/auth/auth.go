@@ -7,9 +7,11 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/rs/zerolog/log"
 )
 
 var privateKey *rsa.PrivateKey
@@ -28,7 +30,12 @@ func GenerateJWT(email string) (string, error) {
 }
 
 func LoadPrivateKey(path string) error {
-	keyData, err := os.ReadFile(path)
+	envPath, err := filepath.Abs("../../")
+	if err != nil {
+		log.Err(err).Msg("failed to get current working directory")
+	}
+	envPath = filepath.Join(envPath, path)
+	keyData, err := os.ReadFile(envPath)
 	if err != nil {
 		return err
 	}
@@ -69,4 +76,20 @@ func LoadPublicKey(publicKeyPath string) error {
 		return errors.New("not an RSA public key")
 	}
 	return nil
+}
+
+func ParseToken(tokenstring string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenstring, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, errors.New("")
+		}
+		return publicKey, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, errors.New("invalid token")
 }
