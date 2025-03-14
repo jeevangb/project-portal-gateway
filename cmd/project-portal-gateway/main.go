@@ -6,6 +6,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
+	"github.com/jeevangb/project-portal-gateway/internal/auth"
 	"github.com/jeevangb/project-portal-gateway/internal/clients"
 	"github.com/jeevangb/project-portal-gateway/internal/config"
 	"github.com/jeevangb/project-portal-gateway/internal/graph"
@@ -22,6 +23,10 @@ func main() {
 		*env = "dev" // Set your default environment value here
 	}
 	configdata, err := config.LoadConfig(env)
+	if err != nil {
+		return
+	}
+	err = auth.LoadPrivateKey(configdata.PrivateKeyPath)
 	if err != nil {
 		return
 	}

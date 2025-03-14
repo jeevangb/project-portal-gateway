@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	Port     string `mapstructure:"PORT"`
-	AuthPORT string `mapstructure:"GRPC_SERVER_PORT"`
+	Port           string `mapstructure:"PORT"`
+	AuthPORT       string `mapstructure:"GRPC_SERVER_PORT"`
+	PrivateKeyPath string `mapstructure:"PRIVATE_KEY_PATH"`
 }
 
 func LoadConfig(env *string) (Config, error) {
@@ -18,6 +19,7 @@ func LoadConfig(env *string) (Config, error) {
 	envs := []string{
 		"PORT",
 		"GRPC_SERVER_PORT",
+		"PRIVATE_KEY_PATH",
 	}
 	v.AddConfigPath("./")
 	v.SetConfigFile("internal/config/" + *env + "/application.env")

@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/jeevangb/project-portal-gateway/internal/graph/model"
@@ -17,12 +16,13 @@ func (r *mutationResolver) SignUp(ctx context.Context, input model.NewUser) (*mo
 	ctx, cancel := context.WithTimeout(ctx, 50*time.Minute)
 	defer cancel()
 	return r.Service.SignUp(ctx, &input)
-
 }
 
 // Login is the resolver for the login field.
-func (r *mutationResolver) Login(ctx context.Context, username string, password string) (*model.UserResponse, error) {
-	panic(fmt.Errorf("not implemented: Login - login"))
+func (r *mutationResolver) Login(ctx context.Context, email string, password string) (*model.UserResponse, error) {
+	ctx, cancel := context.WithTimeout(ctx, 50*time.Minute)
+	defer cancel()
+	return r.Service.Login(ctx, email, password)
 }
 
 // HealthCheck is the resolver for the healthCheck field.

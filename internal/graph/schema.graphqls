@@ -25,5 +25,5 @@ type UserResponse {
 
 type Mutation {
   signUp(input: NewUser!): UserResponse!
-  login(username: String!, password: String!): UserResponse!
+  login(email: String!, password: String!): UserResponse!
 }
