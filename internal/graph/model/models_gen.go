@@ -36,6 +36,14 @@ type ProjectInput struct {
 type Query struct {
 }
 
+type UpdateProjectInput struct {
+	Title           *string  `json:"title,omitempty"`
+	Description     *string  `json:"description,omitempty"`
+	MentorName      *string  `json:"mentorName,omitempty"`
+	TechnologyStack []string `json:"technologyStack,omitempty"`
+	Status          *string  `json:"status,omitempty"`
+}
+
 type UserResponse struct {
 	Message string  `json:"message"`
 	Token   *string `json:"token,omitempty"`

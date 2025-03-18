@@ -15,6 +15,7 @@ type Service interface {
 	SignUp(ctx context.Context, input *model.NewUser) (*model.UserResponse, error)
 	Login(ctx context.Context, username string, password string) (*model.UserResponse, error)
 	CreateProject(ctx context.Context, input *model.ProjectInput) (*model.Project, error)
+	UpdateProject(ctx context.Context, input *model.UpdateProjectInput) (*model.Project, error)
 }
 
 func NewService(client clients.GrpcClient) (Service, error) {

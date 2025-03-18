@@ -23,6 +23,22 @@ func (s *serviceLayer) CreateProject(ctx context.Context, input *model.ProjectIn
 	return &resp, nil
 }
 
+func (s *serviceLayer) UpdateProject(ctx context.Context, input *model.UpdateProjectInput) (*model.Project, error) {
+	req := &proto.UpdateProjectRequest{
+		Name:            *input.Title,
+		Description:     *input.Description,
+		TechnologyStack: input.TechnologyStack,
+		MentorName:      *input.Description,
+		Status:          *input.Status,
+	}
+	res, err := s.cli.MentorService.UpdateProject(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	resp := convertResponse(res)
+	return &resp, nil
+}
+
 func convertResponse(res *proto.Project) model.Project {
 	// techStack := strings.Split(res.GetTechnologyStack, ",")
 	return model.Project{
@@ -30,6 +46,5 @@ func convertResponse(res *proto.Project) model.Project {
 		Description:     res.GetDescription(),
 		TechnologyStack: res.GetTechnologyStack(),
 		Status:          res.GetStatus(),
-		ID:              res.GetId(),
 	}
 }

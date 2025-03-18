@@ -11,6 +11,8 @@ type Mutation {
   signUp(input: NewUser!): UserResponse!
   login(email: String!, password: String!): UserResponse!
   createProject(input: ProjectInput!): Project!
+  updateProject(input: UpdateProjectInput): Project!
+  deleteProject(name : String!): Boolean!
 }
 
 type HealthStatus{
@@ -46,4 +48,11 @@ input ProjectInput{
   status: String!
 }
 
+input UpdateProjectInput {
+  title: String
+  description: String
+  mentorName: String
+  technologyStack: [String!]
+  status: String
+}
 
