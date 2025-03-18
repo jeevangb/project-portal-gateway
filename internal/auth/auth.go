@@ -5,7 +5,6 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -57,7 +56,12 @@ func LoadPrivateKey(path string) error {
 
 // LoadPublicKey loads the public key from a PEM file
 func LoadPublicKey(publicKeyPath string) error {
-	keyData, err := ioutil.ReadFile(publicKeyPath)
+	envPath, err := filepath.Abs("../../")
+	if err != nil {
+		log.Err(err).Msg("failed to get current working directory")
+	}
+	envPath = filepath.Join(envPath, publicKeyPath)
+	keyData, err := os.ReadFile(envPath)
 	if err != nil {
 		return err
 	}

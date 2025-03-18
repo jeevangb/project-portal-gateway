@@ -25,6 +25,13 @@ func (r *mutationResolver) Login(ctx context.Context, email string, password str
 	return r.Service.Login(ctx, email, password)
 }
 
+// CreateProject is the resolver for the createProject field.
+func (r *mutationResolver) CreateProject(ctx context.Context, input model.ProjectInput) (*model.Project, error) {
+	ctx, cancel := context.WithTimeout(ctx, 50*time.Minute)
+	defer cancel()
+	return r.Service.CreateProject(ctx, &input)
+}
+
 // HealthCheck is the resolver for the healthCheck field.
 func (r *queryResolver) HealthCheck(ctx context.Context) (*model.HealthStatus, error) {
 	return &model.HealthStatus{
