@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProjectServiceClient interface {
 	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*Project, error)
+	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*Project, error)
 }
 
 type projectServiceClient struct {
@@ -42,11 +43,21 @@ func (c *projectServiceClient) CreateProject(ctx context.Context, in *CreateProj
 	return out, nil
 }
 
+func (c *projectServiceClient) UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*Project, error) {
+	out := new(Project)
+	err := c.cc.Invoke(ctx, "/proto.ProjectService/UpdateProject", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProjectServiceServer is the server API for ProjectService service.
 // All implementations must embed UnimplementedProjectServiceServer
 // for forward compatibility
 type ProjectServiceServer interface {
 	CreateProject(context.Context, *CreateProjectRequest) (*Project, error)
+	UpdateProject(context.Context, *UpdateProjectRequest) (*Project, error)
 	mustEmbedUnimplementedProjectServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedProjectServiceServer struct {
 
 func (UnimplementedProjectServiceServer) CreateProject(context.Context, *CreateProjectRequest) (*Project, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProject not implemented")
+}
+func (UnimplementedProjectServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*Project, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
 }
 func (UnimplementedProjectServiceServer) mustEmbedUnimplementedProjectServiceServer() {}
 
@@ -88,6 +102,24 @@ func _ProjectService_CreateProject_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectService_UpdateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).UpdateProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.ProjectService/UpdateProject",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).UpdateProject(ctx, req.(*UpdateProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProjectService_ServiceDesc is the grpc.ServiceDesc for ProjectService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateProject",
 			Handler:    _ProjectService_CreateProject_Handler,
+		},
+		{
+			MethodName: "UpdateProject",
+			Handler:    _ProjectService_UpdateProject_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
