@@ -16,6 +16,23 @@ type NewUser struct {
 	Password string `json:"password"`
 }
 
+type Project struct {
+	ID              string   `json:"id"`
+	Name            string   `json:"name"`
+	Description     string   `json:"description"`
+	TechnologyStack []string `json:"technologyStack"`
+	MentorName      string   `json:"mentorName"`
+	Status          string   `json:"status"`
+}
+
+type ProjectInput struct {
+	Name            string   `json:"name"`
+	Description     string   `json:"description"`
+	MentorName      string   `json:"mentorName"`
+	TechnologyStack []string `json:"technologyStack"`
+	Status          string   `json:"status"`
+}
+
 type Query struct {
 }
 

@@ -10,6 +10,7 @@ type Query {
 type Mutation {
   signUp(input: NewUser!): UserResponse!
   login(email: String!, password: String!): UserResponse!
+  createProject(input: ProjectInput!): Project!
 }
 
 type HealthStatus{
@@ -28,5 +29,21 @@ type UserResponse {
   token: String 
 }
 
+type Project{
+  id: ID!
+  name: String!
+  description: String!
+  technologyStack: [String!]!
+  mentorName: String!
+  status: String!
+}
+
+input ProjectInput{
+  name: String!
+  description: String!
+  mentorName: String!
+  technologyStack: [String!]!
+  status: String!
+}
 
 

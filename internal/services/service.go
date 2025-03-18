@@ -8,15 +8,16 @@ import (
 )
 
 type serviceLayer struct {
-	cli clients.AuthClient
+	cli clients.GrpcClient
 }
 
 type Service interface {
 	SignUp(ctx context.Context, input *model.NewUser) (*model.UserResponse, error)
 	Login(ctx context.Context, username string, password string) (*model.UserResponse, error)
+	CreateProject(ctx context.Context, input *model.ProjectInput) (*model.Project, error)
 }
 
-func NewService(client clients.AuthClient) (Service, error) {
+func NewService(client clients.GrpcClient) (Service, error) {
 	return &serviceLayer{
 		cli: client,
 	}, nil

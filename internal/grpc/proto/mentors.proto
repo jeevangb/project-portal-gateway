@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "internal/grpc/proto";
+
+service ProjectService{
+    rpc CreateProject(CreateProjectRequest) returns (Project);
+}
+
+message CreateProjectRequest{
+    string name = 1;
+    string description = 2;
+    repeated string technology_stack = 3;
+    string mentorName = 4;
+    string status = 5;
+}
+
+message Project{
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    repeated string technology_stack = 4;
+    string mentorName = 5;
+    string status =6;
+}
