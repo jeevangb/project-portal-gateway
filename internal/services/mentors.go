@@ -39,6 +39,17 @@ func (s *serviceLayer) UpdateProject(ctx context.Context, input *model.UpdatePro
 	return &resp, nil
 }
 
+func (s *serviceLayer) DeleteProject(ctx context.Context, input string) (bool, error) {
+	req := &proto.DeleteProjectRequest{
+		Name: input,
+	}
+	resp, err := s.cli.MentorService.DeleteProject(ctx, req)
+	if err != nil {
+		return false, err
+	}
+	return resp.Success, nil
+}
+
 func convertResponse(res *proto.Project) model.Project {
 	// techStack := strings.Split(res.GetTechnologyStack, ",")
 	return model.Project{
