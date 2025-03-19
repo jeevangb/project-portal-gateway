@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/jeevangb/project-portal-gateway/internal/graph/model"
@@ -42,7 +41,9 @@ func (r *mutationResolver) UpdateProject(ctx context.Context, input *model.Updat
 
 // DeleteProject is the resolver for the deleteProject field.
 func (r *mutationResolver) DeleteProject(ctx context.Context, name string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteProject - deleteProject"))
+	ctx, cancel := context.WithTimeout(ctx, 50*time.Minute)
+	defer cancel()
+	return r.Service.DeleteProject(ctx, name)
 }
 
 // HealthCheck is the resolver for the healthCheck field.

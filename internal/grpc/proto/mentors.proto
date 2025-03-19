@@ -7,6 +7,7 @@ option go_package = "internal/grpc/proto";
 service ProjectService{
     rpc CreateProject(CreateProjectRequest) returns (Project);
     rpc UpdateProject(UpdateProjectRequest) returns (Project);
+    rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse);
 }
 
 message CreateProjectRequest{
@@ -33,4 +34,12 @@ message UpdateProjectRequest{
     repeated string technology_stack = 3;
     string mentorName = 4;
     string status = 5;
+}
+
+message DeleteProjectRequest {
+    string name = 1;
+}
+
+message DeleteProjectResponse {
+    bool success = 1;
 }

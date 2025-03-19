@@ -16,6 +16,7 @@ type Service interface {
 	Login(ctx context.Context, username string, password string) (*model.UserResponse, error)
 	CreateProject(ctx context.Context, input *model.ProjectInput) (*model.Project, error)
 	UpdateProject(ctx context.Context, input *model.UpdateProjectInput) (*model.Project, error)
+	DeleteProject(ctx context.Context, input string) (bool, error)
 }
 
 func NewService(client clients.GrpcClient) (Service, error) {
