@@ -70,7 +70,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		HealthCheck func(childComplexity int) int
+		FetchAllProjects func(childComplexity int) int
+		HealthCheck      func(childComplexity int) int
 	}
 
 	UserResponse struct {
@@ -88,6 +89,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	HealthCheck(ctx context.Context) (*model.HealthStatus, error)
+	FetchAllProjects(ctx context.Context) ([]*model.Project, error)
 }
 
 type executableSchema struct {
@@ -224,6 +226,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Project.TechnologyStack(childComplexity), true
+
+	case "Query.fetchAllProjects":
+		if e.complexity.Query.FetchAllProjects == nil {
+			break
+		}
+
+		return e.complexity.Query.FetchAllProjects(childComplexity), true
 
 	case "Query.healthCheck":
 		if e.complexity.Query.HealthCheck == nil {
@@ -1338,6 +1347,64 @@ func (ec *executionContext) fieldContext_Query_healthCheck(_ context.Context, fi
 				return ec.fieldContext_HealthStatus_message(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type HealthStatus", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_fetchAllProjects(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_fetchAllProjects(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().FetchAllProjects(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Project)
+	fc.Result = res
+	return ec.marshalNProject2ᚕᚖgithubᚗcomᚋjeevangbᚋprojectᚑportalᚑgatewayᚋinternalᚋgraphᚋmodelᚐProjectᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_fetchAllProjects(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Project_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Project_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Project_description(ctx, field)
+			case "technologyStack":
+				return ec.fieldContext_Project_technologyStack(ctx, field)
+			case "mentorName":
+				return ec.fieldContext_Project_mentorName(ctx, field)
+			case "status":
+				return ec.fieldContext_Project_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Project", field.Name)
 		},
 	}
 	return fc, nil
@@ -3892,6 +3959,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "fetchAllProjects":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_fetchAllProjects(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -4351,6 +4440,50 @@ func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋjeevangbᚋproject�
 
 func (ec *executionContext) marshalNProject2githubᚗcomᚋjeevangbᚋprojectᚑportalᚑgatewayᚋinternalᚋgraphᚋmodelᚐProject(ctx context.Context, sel ast.SelectionSet, v model.Project) graphql.Marshaler {
 	return ec._Project(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNProject2ᚕᚖgithubᚗcomᚋjeevangbᚋprojectᚑportalᚑgatewayᚋinternalᚋgraphᚋmodelᚐProjectᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Project) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNProject2ᚖgithubᚗcomᚋjeevangbᚋprojectᚑportalᚑgatewayᚋinternalᚋgraphᚋmodelᚐProject(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalNProject2ᚖgithubᚗcomᚋjeevangbᚋprojectᚑportalᚑgatewayᚋinternalᚋgraphᚋmodelᚐProject(ctx context.Context, sel ast.SelectionSet, v *model.Project) graphql.Marshaler {

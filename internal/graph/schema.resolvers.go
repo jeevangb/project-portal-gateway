@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jeevangb/project-portal-gateway/internal/graph/model"
@@ -52,6 +53,11 @@ func (r *queryResolver) HealthCheck(ctx context.Context) (*model.HealthStatus, e
 		Status:  200,
 		Message: "Success",
 	}, nil
+}
+
+// FetchAllProjects is the resolver for the fetchAllProjects field.
+func (r *queryResolver) FetchAllProjects(ctx context.Context) ([]*model.Project, error) {
+	panic(fmt.Errorf("not implemented: FetchAllProjects - fetchAllProjects"))
 }
 
 // Mutation returns MutationResolver implementation.

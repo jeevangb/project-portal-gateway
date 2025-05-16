@@ -5,6 +5,7 @@
 
 type Query {
   healthCheck: HealthStatus
+  fetchAllProjects: [Project!]!
 }
 
 type Mutation {

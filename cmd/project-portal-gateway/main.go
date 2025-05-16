@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"flag"
+	"fmt"
+	"io"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jeevangb/project-portal-gateway/internal/auth"
 	"github.com/jeevangb/project-portal-gateway/internal/clients"
@@ -45,6 +49,12 @@ func main() {
 	}
 	//Initialize gin router
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"}, // Frontend origin
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
 	router.Use(middleware.ValidateToken())
 	//Initialize graphql server
 	graph := graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
@@ -57,6 +67,12 @@ func main() {
 	})
 	//This handles the GraphQL queries sent via POST requests.
 	router.POST("/query", func(ctx *gin.Context) {
+		body, _ := io.ReadAll(ctx.Request.Body)
+		fmt.Println("Received GraphQL Request:", string(body))
+
+		// Recreate the request body since ReadAll drains it
+		ctx.Request.Body = io.NopCloser(bytes.NewBuffer(body))
+
 		srv.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 	//start server
